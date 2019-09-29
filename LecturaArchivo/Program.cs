@@ -9,39 +9,58 @@ namespace LecturaArchivo
     {
         static void Main(string[] args)
         {
-            var lines = ReadFrom("/Users/kernel_panic/sampleQuotes.txt");
 
-            foreach (var line in lines)
+            ShowTeleprompter().Wait();
+        }
+
+
+        private static async Task ShowTeleprompter() {
+            var words = ReadFrom("/Users/kernel_panic/sampleQuotes.txt");
+
+            foreach (var word in words)
             {
-                Console.Write(line);
+                Console.Write(word);
 
-                if(!string.IsNullOrWhiteSpace(line)) {
-                    var pause = Task.Delay(200);
-                    pause.Wait();
+                if (!string.IsNullOrWhiteSpace(word)) {
+                    await Task.Delay(200);
                 }
             }
         }
 
-
-    static IEnumerable<string> ReadFrom(string file) {
+        static IEnumerable<string> ReadFrom(string file) {
             string line;
-   
-
+        
             using (var reader = File.OpenText(file))
             {
                 while ((line = reader.ReadLine()) != null)
                 {
                     var words = line.Split(' ');
+                    var lineLength = 0;
 
                     foreach (var word in words)
                     {
                         yield return word + ' ';
+
+              
+                        lineLength += word.Length + 1;
+
+                        if (lineLength > 70) {
+                            yield return Environment.NewLine;
+                            lineLength = 0;
+                     
+                        }
                     }
 
                     yield return Environment.NewLine;
                 }
+
+
             }
         }
 
     }
+
+
+
+
 }
