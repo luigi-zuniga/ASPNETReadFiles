@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Threading.Tasks;
 
 namespace LecturaArchivo
 {
@@ -12,25 +13,35 @@ namespace LecturaArchivo
 
             foreach (var line in lines)
             {
-                Console.WriteLine(line);
+                Console.Write(line);
+
+                if(!string.IsNullOrWhiteSpace(line)) {
+                    var pause = Task.Delay(200);
+                    pause.Wait();
+                }
             }
         }
 
 
-        static IEnumerable<string> ReadFrom(string file) {
+    static IEnumerable<string> ReadFrom(string file) {
             string line;
+   
 
             using (var reader = File.OpenText(file))
             {
                 while ((line = reader.ReadLine()) != null)
                 {
-                    yield return line;
+                    var words = line.Split(' ');
+
+                    foreach (var word in words)
+                    {
+                        yield return word + ' ';
+                    }
+
+                    yield return Environment.NewLine;
                 }
             }
         }
 
     }
 }
-
-
-//yield: nos permite acceder a elementos de una lista IEnumerable de forma progesiva
